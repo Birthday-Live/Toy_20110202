@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>随便记记</title>
+<style>
+  :root{
+    --bg: #F0EEE6;
+    --surface: #FAF9F5;
+    --ink: #1F1E1D;
+    --ink-2: #3D3B37;
+    --muted: #8A877D;
+    --line: #E5E2D8;
+    --accent: #C96442;
+    --accent-hover: #B2543A;
+    --radius: 14px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(31,30,29,.028) 1px, transparent 0);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection{ background: #F0D9CE; color: var(--ink); }
+
+  .wrap{
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 56px 20px 96px;
+  }
+
+  /* ---------- 头部 ---------- */
+  header{
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .logo{
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #FBF7F2;
+    display: grid;
+    place-items: center;
+    font-family: "Songti SC", "Noto Serif SC", Georgia, serif;
+    font-size: 20px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(201,100,66,.28);
+    margin-top: 2px;
+    user-select: none;
+  }
+  h1{
+    margin: 0 0 4px;
+    font-family: "Songti SC", "Noto Serif SC", Georgia, "Times New Roman", serif;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+  .sub{
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  /* ---------- 警告条 ---------- */
+  .warn{
+    display: none;
+    background: #FBEEDB;
+    border: 1px solid #EBD9B8;
+    color: #7A5C2E;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .warn.show{ display: block; }
+
+  /* ---------- 输入区 ---------- */
+  .composer{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 16px 11px;
+    box-shadow: 0 1px 2px rgba(31,30,29,.04);
+    transition: border-color .18s ease, box-shadow .18s ease;
+  }
+  .composer:focus-within{
+    border-color: #DCCEC4;
+    box-shadow: 0 0 0 3px rgba(201,100,66,.08), 0 1px 2px rgba(31,30,29,.04);
+  }
+  textarea{
+    display: block;
+    width: 100%;
+    min-height: 66px;
+    max-height: 240px;
+    padding: 2px 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    resize: none;
+    font: inherit;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  textarea::placeholder{ color: #A9A69C; }
+
+  .composer-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .counter{
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  button{
+    font: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: inherit;
+  }
+
+  .btn-primary{
+    background: var(--accent);
+    color: #FCF8F4;
+    padding: 9px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: .02em;
+    box-shadow: 0 1px 2px rgba(201,100,66,.25);
+    transition: background .18s ease, transform .08s ease, box-shadow .18s ease;
+  }
+  .btn-primary:hover{ background: var(--accent-hover); }
+  .btn-primary:active{ transform: translateY(1px); box-shadow: none; }
+  .btn-primary:focus-visible{ outline: 2px solid rgba(201,100,66,.45); outline-offset: 2px; }
+
+  /* ---------- 列表头 ---------- */
+  .list-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 32px 2px 12px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .list-head b{
+    color: var(--ink-2);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .btn-ghost{
+    font-size: 13px;
+    color: var(--muted);
+    padding: 4px 9px;
+    border-radius: 8px;
+    transition: color .15s ease, background .15s ease;
+  }
+  .btn-ghost:hover{
+    color: var(--accent);
+    background: rgba(201,100,66,.08);
+  }
+
+  /* ---------- 便签 ---------- */
+  .notes{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .note{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 16px 9px;
+    transition: border-color .18s ease, box-shadow .18s ease;
+    animation: pop .22s ease-out;
+  }
+  .note:hover{
+    border-color: #DCD5C8;
+    box-shadow: 0 2px 12px rgba(31,30,29,.05);
+  }
+  @keyframes pop{
+    from{ opacity: 0; transform: translateY(-4px); }
+    to  { opacity: 1; transform: none; }
+  }
+  .note-text{
+    margin: 0 0 9px;
+    font-size: 14.5px;
+    line-height: 1.72;
+    color: var(--ink-2);
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  .note-foot{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 7px;
+    border-top: 1px solid rgba(31,30,29,.05);
+  }
+  .note-foot time{
+    font-size: 12px;
+    color: #A5A29A;
+    font-variant-numeric: tabular-nums;
+  }
+  .del{
+    font-size: 12px;
+    color: #A5A29A;
+    padding: 2px 8px;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity .15s ease, color .15s ease, background .15s ease;
+  }
+  .note:hover .del,
+  .note:focus-within .del{ opacity: 1; }
+  .del:hover{
+    color: var(--accent);
+    background: rgba(201,100,66,.09);
+  }
+  @media (hover: none){
+    .del{ opacity: 1; }
+  }
+
+  /* ---------- 空状态 ---------- */
+  .empty{
+    display: none;
+    text-align: center;
+    color: #A9A69C;
+    font-size: 14px;
+    padding: 48px 0 20px;
+    user-select: none;
+  }
+  .empty.show{ display: block; }
+  .empty .mark{
+    display: block;
+    font-size: 26px;
+    margin-bottom: 10px;
+    opacity: .55;
+  }
+
+  /* ---------- 页脚 ---------- */
+  .foot{
+    margin: 40px 0 0;
+    text-align: center;
+    font-size: 12px;
+    color: #B0ADA4;
+    user-select: none;
+  }
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position: fixed;
+    left: 50%;
+    bottom: 32px;
+    transform: translate(-50%, 16px);
+    background: #2B2A27;
+    color: #F5F3EE;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
+    transition: opacity .22s ease, transform .22s ease;
+    z-index: 10;
+  }
+  .toast.show{
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  @media (max-width: 480px){
+    .wrap{ padding: 36px 16px 80px; }
+    h1{ font-size: 23px; }
+    .logo{ flex-basis: 38px; width: 38px; height: 38px; font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="logo">记</div>
+    <div>
+      <h1>随便记记</h1>
+      <p class="sub">想到什么就写下来，数据存在浏览器的 Cookie 里。</p>
+    </div>
+  </header>
+
+  <div class="warn" id="warn">
+    当前环境似乎无法写入 Cookie（例如直接以 file:// 打开）。请用本地服务器或正常网址访问，否则记录无法保存。
+  </div>
+
+  <section class="composer">
+    <textarea id="input" rows="2" maxlength="500"
+              placeholder="今天想到点什么…（⌘/Ctrl + Enter 快速保存）"></textarea>
+    <div class="composer-bar">
+      <span class="counter" id="counter">0 / 500</span>
+      <button class="btn-primary" id="saveBtn" type="button">记下来</button>
+    </div>
+  </section>
+
+  <div class="list-head">
+    <span>共 <b id="count">0</b> 条记录</span>
+    <button class="btn-ghost" id="clearBtn" type="button">清空全部</button>
+  </div>
+
+  <div class="notes" id="notes"></div>
+
+  <div class="empty" id="empty">
+    <span class="mark">✎</span>
+    还没有记录，写点什么吧
+  </div>
+
+  <p class="foot">保存在 Cookie 中 · 有效期一年 · 清除浏览器 Cookie 会一并消失</p>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============ 配置 ============ */
+  var COOKIE_NAME  = 'suibianjiji_notes';
+  var COOKIE_DAYS  = 365;
+  var MAX_LEN      = 500;
+  var SIZE_LIMIT   = 3800;   // 单个 Cookie 值的安全上限（浏览器约 4KB）
+
+  /* ============ DOM ============ */
+  var input    = document.getElementById('input');
+  var saveBtn  = document.getElementById('saveBtn');
+  var counter  = document.getElementById('counter');
+  var countEl  = document.getElementById('count');
+  var notesEl  = document.getElementById('notes');
+  var emptyEl  = document.getElementById('empty');
+  var clearBtn = document.getElementById('clearBtn');
+  var toastEl  = document.getElementById('toast');
+  var warnEl   = document.getElementById('warn');
+
+  /* ============ Cookie 工具 ============ */
+  function setCookie(name, value, days) {
+    var str = name + '=' + value + ';path=/;SameSite=Lax';
+    if (days) {
+      var d = new Date();
+      d.setTime(d.getTime() + days * 86400000);
+      str += ';expires=' + d.toUTCString();
+    }
+    document.cookie = str;
+  }
+
+  function getCookie(name) {
+    if (!document.cookie) return null;
+    var parts = document.cookie.split('; ');
+    for (var i = 0; i < parts.length; i++) {
+      var idx = parts[i].indexOf('=');
+      if (idx > -1 && parts[i].slice(0, idx) === name) {
+        return parts[i].slice(idx + 1);
+      }
+    }
+    return null;
+  }
+
+  function removeCookie(name) {
+    document.cookie = name + '=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  }
+
+  function cookiesAvailable() {
+    try {
+      document.cookie = '__t=1;path=/;SameSite=Lax';
+      var ok = document.cookie.indexOf('__t=1') > -1;
+      document.cookie = '__t=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      return ok;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /* ============ 数据读写 ============ */
+  function readNotes() {
+    var raw = getCookie(COOKIE_NAME);
+    if (!raw) return [];
+    try {
+      var arr = JSON.parse(decodeURIComponent(raw));
+      if (!Array.isArray(arr)) return [];
+      return arr.filter(function (n) {
+        return n && typeof n.text === 'string' && n.text.length;
+      });
+    } catch (e) {
+      console.warn('Cookie 数据解析失败：', e);
+      return [];
+    }
+  }
+
+  function writeNotes(notes) {
+    var value = encodeURIComponent(JSON.stringify(notes));
+    if (value.length > SIZE_LIMIT) return false;   // 超出 Cookie 容量
+    setCookie(COOKIE_NAME, value, COOKIE_DAYS);
+    return true;
+  }
+
+  /* ============ 小工具 ============ */
+  function uid() {
+    if (window.crypto && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function fmtTime(ts) {
+    var d = new Date(ts || Date.now());
+    var now = new Date();
+    var time = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    if (d.toDateString() === now.toDateString()) return '今天 ' + time;
+    var yest = new Date(now.getTime() - 86400000);
+    if (d.toDateString() === yest.toDateString()) return '昨天 ' + time;
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + time;
+  }
+
+  var toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toastEl.classList.remove('show');
+    }, 1800);
+  }
+
+  /* ============ 渲染 ============ */
+  function render() {
+    var notes = readNotes().sort(function (a, b) {
+      return (b.ts || 0) - (a.ts || 0);
+    });
+
+    countEl.textContent = notes.length;
+    emptyEl.classList.toggle('show', notes.length === 0);
+
+    notesEl.innerHTML = notes.map(function (n) {
+      return '' +
+        '<article class="note">' +
+          '<p class="note-text">' + esc(n.text) + '</p>' +
+          '<div class="note-foot">' +
+            '<time>' + fmtTime(n.ts) + '</time>' +
+            '<button class="del" type="button" data-id="' + esc(n.id) + '">删除</button>' +
+          '</div>' +
+        '</article>';
+    }).join('');
+  }
+
+  /* ============ 交互 ============ */
+  function autoGrow() {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 240) + 'px';
+  }
+
+  function updateCounter() {
+    counter.textContent = input.value.length + ' / ' + MAX_LEN;
+  }
+
+  function addNote() {
+    var text = input.value.trim();
+    if (!text) {
+      input.focus();
+      return;
+    }
+
+    var notes = readNotes();
+    notes.push({ id: uid(), text: text, ts: Date.now() });
+
+    if (!writeNotes(notes)) {
+      toast('Cookie 空间不足了，先删掉几条再记吧');
+      return;
+    }
+
+    input.value = '';
+    autoGrow();
+    updateCounter();
+    render();
+    toast('已记下 ✓');
+  }
+
+  saveBtn.addEventListener('click', addNote);
+
+  input.addEventListener('input', function () {
+    autoGrow();
+    updateCounter();
+  });
+
+  input.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      addNote();
+    }
+  });
+
+  notesEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('.del');
+    if (!btn) return;
+    var id = btn.getAttribute('data-id');
+    var notes = readNotes().filter(function (n) {
+      return String(n.id) !== id;
+    });
+    writeNotes(notes);
+    render();
+    toast('已删除');
+  });
+
+  clearBtn.addEventListener('click', function () {
+    var notes = readNotes();
+    if (!notes.length) return;
+    if (!confirm('确定清空全部 ' + notes.length + ' 条记录吗？')) return;
+    removeCookie(COOKIE_NAME);
+    render();
+    toast('已清空');
+  });
+
+  /* ============ 启动 ============ */
+  if (!cookiesAvailable()) {
+    warnEl.classList.add('show');
+  }
+  render();
+  updateCounter();
+  autoGrow();
+
+})();
+</script>
+
+</body>
+</html>
